@@ -1,0 +1,27 @@
+{
+  "name": "msa-api",
+  "version": "1.0.0",
+  "description": "A simple ping server which inraments a key in redis",
+  "main": "api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node api.js",
+    "await-redis": "node await.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async-redis": "^1.1.7",
+    "body-parser": "^1.19.0",
+    "config": "^2.0.1",
+    "convict": "^4.3.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-prom-bundle": "^5.1.5",
+    "express-ws": "^4.0.0",
+    "prom-client": "^11.5.3",
+    "redis": "^2.6.5",
+    "retry": "^0.10.0",
+    "ws": "^7.2.5"
+  }
+}
