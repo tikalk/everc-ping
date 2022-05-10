@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poller
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: init-poller
+        image: registry.gitlab.com/tikal-external/academy-public/images/bind-tools
+        command: ['sh', '-c', "until dig +short A api.${MY_POD_NAMESPACE}.svc.cluster.local && echo continuing ...; do echo waiting for api; sleep 2; done"]
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
