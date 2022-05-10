@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - image: registry.gitlab.com/tikal-external/academy-public/images/nodejs-ping:latest
+        name: nodejs-ping
+        env:
+          - name: NODE_ENV
+            # the name of our configfile ... - json
+            value: kubernetes
+          - name: REDIS_SERVICE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: REDIS_PASSWORD
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+          - mountPath: /opt/tikal/config/kubernetes.json
+            name: config
+            subPath: kubernetes.json
+        resources: {}
+      volumes:
+      - name: config
+        configMap:
+          name: api-config
+status: {}

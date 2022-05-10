@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: redis
+    spec:
+      containers:
+      - image: bitnami/redis
+        name: redis
+        envFrom:
+          - secretRef:
+              name: redis-secret
+        # Alternate (more granular option)
+        # env:
+        # - name: REDIS_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: redis-secret
+        #       key: REDIS_PASSWORD
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+          - mountPath: /data
+            name: redis-data
+          # Using ./configmam.yaml as another example
+          # - mountPath: /opt/bitnami/redis/mounted-etc/redis.conf
+          #   name: config
+          #   subPath: redis.conf
+        resources: {}
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-data
+      # - name: config
+      #   configMap:
+      #     name: redis-config

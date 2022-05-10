@@ -1,0 +1,21 @@
+
+# Old example ...
+# Use ::
+#
+###
+# configMapGenerator:
+# - name: api-config
+#   files:
+#     - kubernetes.json
+###
+
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: api-config
+# data:
+#   kubernetes.json: |
+#     {
+#       "redis_host": "redis",
+#       "redis_port": 6379
+#     }

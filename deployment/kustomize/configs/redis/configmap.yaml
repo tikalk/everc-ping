@@ -1,0 +1,10 @@
+# not in use just for example
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: redis-config
+# data:
+#   redis.conf: |
+#     loglevel debug
+#     # not secure!
+#     # requirepass MyS3cr3t 
