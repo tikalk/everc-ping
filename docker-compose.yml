@@ -15,7 +15,7 @@ services:
 
   api:
     build: ./src/api/
-    image: registry.gitlab.com/tikal-external/academy-public/images/nodejs-ping:${DOCKER_VERSION:-latest}
+    image: ${DOCKER_REPO:-registry.gitlab.com/tikal-external/academy-public/images}/nodejs-ping:${DOCKER_VERSION:-latest}
     ports:
       - 8080:8080
     environment:
@@ -25,7 +25,7 @@ services:
 
   consumer:
     build: ./src/pinger/
-    image: registry.gitlab.com/tikal-external/academy-public/images/pinger:${DOCKER_VERSION:-latest}
+    image: ${DOCKER_REPO:-registry.gitlab.com/tikal-external/academy-public/images}/pinger:${DOCKER_VERSION:-latest}
     environment:
       API_URL: http://api:8080
     depends_on:
@@ -33,7 +33,7 @@ services:
 
   client:
     build: ./src/poller/
-    image: registry.gitlab.com/tikal-external/academy-public/images/poller:${DOCKER_VERSION:-latest}
+    image: ${DOCKER_REPO:-registry.gitlab.com/tikal-external/academy-public/images}/poller:${DOCKER_VERSION:-latest}
     environment:
       API_URL: http://api:8080
     depends_on:

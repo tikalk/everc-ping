@@ -7,8 +7,60 @@
 DOCKER_COMPOSE := /usr/local/bin/docker-compose
 REDIS_PASSWORD := 'MyS3cr3t'
 
+RELEASE_NAME	 := ping-app
+CHART_BASE_DIR := ./deployment/helm/charts
+CHART_NAME		 := pingalicious
+
+.PHONY: k3d-devcluster k3d-cleanup-cluster dc-build dc-push dc-stop dc-clean-run dc-run
 .PHONY: docker-check redis-container-start redis-container-stop redis-container-cleanup node-cleanup node-npm-install node-run-local 
 
+# k3d crete devcluster
+k3d-devcluster:
+	@k3d cluster create devcluster \
+	--api-port 127.0.0.1:6443 \
+	-p 80:80@loadbalancer \
+	-p 443:443@loadbalancer
+
+k3d-cleanup-cluster:
+	@k3d cluster delete devcluster
+
+# helm labs
+
+helm-dependency-build:	## helm-chart :: dependency build
+	@rm -f $(CHART_BASE_DIR)/$(CHART_NAME)/Chart.lock ; \
+	helm dependency build $(CHART_BASE_DIR)/$(CHART_NAME)
+
+helm-install-chart: helm-dependency-build ## helm-install-source: helm upgrade $(CHART_NAME)-dev --install
+	@helm upgrade $(RELEASE_NAME)-dev --install $(CHART_BASE_DIR)/$(CHART_NAME)
+
+helm-install-chart-init: ## helm-install-source: helm upgrade $(CHART_NAME)-dev --install
+	@echo "Please note this install is without ingress !"
+	@helm upgrade $(RELEASE_NAME)-dev --install -f $(CHART_BASE_DIR)/$(CHART_NAME)/values-init-version.yaml $(CHART_BASE_DIR)/$(CHART_NAME)
+
+helm-cleanup-chart-release:
+	@helm uninstall $(RELEASE_NAME)-dev
+
+helm-get-values:										## helm-get-values: helm get values $(CHART_NAME)-dev 
+	@helm get values $(RELEASE_NAME)-dev
+
+helm-get-manifest:									## helm-get-manifest: helm get manifest $(CHART_NAME)-dev 
+	@helm get manifest $(RELEASE_NAME)-dev
+
+# kustomize labs
+
+ping-kustomize-deploy:
+	@kubectl apply -k ./deployment/kustomize/manifests
+
+ping-kustomize-deploy-ingress:
+	@kubectl apply -k ./deployment/kustomize/ingress
+
+ping-kustomize-deploy-configs:
+	@kubectl apply -k ./deployment/kustomize/configs
+
+ping-kustomize-deploy-initContainers:
+	@kubectl apply -k ./deployment/kustomize/initContainers
+
+# node-* run nodejs local 
 docker-check:
 	@docker ps &>/dev/null || echo "docker not running"
 
