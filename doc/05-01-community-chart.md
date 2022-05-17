@@ -228,7 +228,7 @@ resources: {}
 If we were to say `--set resources.limits.cpu=100m` `--set resources.limits.memory=128Mi` `--set resources.requests.cpu=50m` `--set resources.requests.memory=64Mi`
 
 ```sh
-helm template --set resources.limits.cpu=100m --set resources.limits.memory=128Mi --set resources.requests.cpu=50m --set resources.requests.memory=64Mi my-whoami ./whoami/templates/deplםyment.yaml
+helm template --set resources.limits.cpu=100m --set resources.limits.memory=128Mi --set resources.requests.cpu=50m --set resources.requests.memory=64Mi my-whoami ./whoami/templates/deployment.yaml
 ```
 
 So our `deployment.yaml` now looks like:
